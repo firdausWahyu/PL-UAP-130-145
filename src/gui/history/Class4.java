@@ -1,4 +1,4 @@
-package gui.screen4;
+package gui.history;
 
 import javax.swing.*;
 

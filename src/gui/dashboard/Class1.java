@@ -1,6 +1,6 @@
-package gui.screen1;
+package gui.dashboard;
 
-import gui.screen2.Class2;
+import gui.listdata.Class2;
 
 import javax.swing.*;
 import java.awt.*;
