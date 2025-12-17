@@ -2,10 +2,10 @@ package gui.history;
 
 import javax.swing.*;
 
-public class Class4 {
+public class History {
     JFrame frame;
 
-    public Class4() {
+    public History() {
         frame = new JFrame("Screen 4 (Dummy)");
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

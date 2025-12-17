@@ -7,7 +7,4 @@ import java.io.IOException;
 
 public class InputPage {
 
-    public InputPage() {
-
-    }
 }

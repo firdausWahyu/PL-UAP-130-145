@@ -1,15 +1,15 @@
 package gui.dashboard;
 
-import gui.listdata.Class2;
+import gui.listdata.ListData;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class Class1 {
+public class Dashboard {
 
     JFrame frame;
 
-    public Class1() {
+    public Dashboard() {
         frame = new JFrame("Screen 1");
         frame.setSize(400, 300);
         frame.setLocationRelativeTo(null);
@@ -19,7 +19,7 @@ public class Class1 {
 
 
         btnToScreen2.addActionListener(e -> {
-            new Class2();
+            new ListData();
             frame.dispose();
         });
 
