@@ -1,6 +1,6 @@
 package gui.dashboard;
 
-import gui.listdata.ListData;
+import gui.listdata.ListPage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +19,7 @@ public class Dashboard {
 
 
         btnToScreen2.addActionListener(e -> {
-            new ListData();
+            new ListPage();
             frame.dispose();
         });
 

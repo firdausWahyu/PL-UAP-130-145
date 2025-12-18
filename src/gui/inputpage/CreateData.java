@@ -16,7 +16,6 @@ public class CreateData {
         frame.setSize(400, 250);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
         frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
 
         kodeMatkul = new JTextField(20);
@@ -66,22 +65,22 @@ public class CreateData {
     private void simpanData() {
         String data1 = kodeMatkul.getText();
         String data2 = namaMatkul.getText();
-        String hari = cbHari.getSelectedItem().toString();
-        String jam  = cbJam.getSelectedItem().toString();
+        String checkBoxHari = cbHari.getSelectedItem().toString();
+        String checkBoxJam  = cbJam.getSelectedItem().toString();
 
 
         // Validasi sederhana
-        if (data1.isEmpty() || data2.isEmpty() || hari.equals("Pilih Hari")
-                || jam.equals("Pilih Jam")) {
+        if (data1.isEmpty() || data2.isEmpty() || checkBoxHari.equals("Pilih Hari")
+                || checkBoxJam.equals("Pilih Jam")) {
             JOptionPane.showMessageDialog(frame, "Data tidak boleh kosong!");
             return;
         }
 
         try (FileWriter fw = new FileWriter("src/gui/data/data.txt", true)) {
-            fw.write(data1 + "|" + data2 + "|" + hari + "|" + jam + "\n");
+            fw.write(
+                    data1 + "|" + data2 + "|" + checkBoxHari + "|" + checkBoxJam + System.lineSeparator());
             JOptionPane.showMessageDialog(frame, "Data berhasil disimpan!");
-            clearForm();
-            System.out.println(new java.io.File(".").getAbsolutePath());
+            frame.dispose();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(frame, "Gagal menyimpan data!");
         }
