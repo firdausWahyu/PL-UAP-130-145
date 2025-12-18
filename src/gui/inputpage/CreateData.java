@@ -5,13 +5,13 @@ import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class InputPage {
+public class CreateData {
     JFrame frame;
     JTextField kodeMatkul, namaMatkul;
     JComboBox<String> cbHari;
     JComboBox<String> cbJam;
 
-    public InputPage(){
+    public CreateData(){
         frame = new JFrame("Input Data");
         frame.setSize(400, 250);
         frame.setLocationRelativeTo(null);
