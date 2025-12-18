@@ -15,17 +15,7 @@ public class Dashboard {
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JButton btnToScreen2 = new JButton("Ke Screen 2");
-
-
-        btnToScreen2.addActionListener(e -> {
-            new ListData();
-            frame.dispose();
-        });
-
-        frame.setLayout(new FlowLayout());
-
-        frame.add(btnToScreen2);
+        frame.add(new JLabel("Cek label", SwingConstants.CENTER));
         frame.setVisible(true);
     }
 }
