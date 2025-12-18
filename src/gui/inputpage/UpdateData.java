@@ -2,18 +2,19 @@ package gui.inputpage;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
-public class CreateData {
+public class UpdateData {
     JFrame frame;
     JTextField kodeMatkul, namaMatkul, ruangan;
     JComboBox<String> cbHari;
     JComboBox<JamSlot> cbJamMulai;
     JComboBox<JamSlot> cbJamSelesai;
+    private int indexEdit;
 
-    public CreateData(){
-        frame = new JFrame("Tambah Data");
+    public UpdateData(String[] data, int index){
+        this.indexEdit = index;
+        frame = new JFrame("Update Data");
         frame.setSize(400, 300);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -77,6 +78,13 @@ public class CreateData {
         frame.add(buatBaris("Pilih Jam  Selesai ", cbJamSelesai));
         frame.add(buatBaris("Pilih Ruangan  ", ruangan));
 
+        kodeMatkul.setText(data[0]);
+        namaMatkul.setText(data[1]);
+        cbHari.setSelectedItem(data[2]);
+        ruangan.setText(data[5]);
+
+        setJam(cbJamMulai, data[3]);
+        setJam(cbJamSelesai, data[4]);
 
         JButton btnSave = new JButton("Simpan");
         JButton btnClear = new JButton("Clear");
@@ -89,42 +97,69 @@ public class CreateData {
     }
 
     private void simpanData() {
-        String data1 = kodeMatkul.getText();
-        String data2 = namaMatkul.getText();
-        String data3 = ruangan.getText();
-        String checkBoxHari = cbHari.getSelectedItem().toString();
-        JamSlot jamMulai = (JamSlot) cbJamMulai.getSelectedItem();
-        JamSlot jamSelesai = (JamSlot) cbJamSelesai.getSelectedItem();
+        String kode = kodeMatkul.getText();
+        String nama = namaMatkul.getText();
+        String ruang = ruangan.getText();
+        String hari = cbHari.getSelectedItem().toString();
+        JamSlot jm = (JamSlot) cbJamMulai.getSelectedItem();
+        JamSlot js = (JamSlot) cbJamSelesai.getSelectedItem();
 
-        String jamMulaiValue = jamMulai.getValue();
-        String jamSelesaiValue = jamSelesai.getValue();
-
-
-        // Validasi sederhana
-        if (data1.isEmpty() || data2.isEmpty() || checkBoxHari.equals("Pilih Hari")
-                || jamMulaiValue.equals("Pilih Jam") || jamSelesaiValue.equals("Pilih Jam")) {
+        if (kode.isEmpty() || nama.isEmpty() || ruang.isEmpty()
+                || hari.equals("Pilih Hari")
+                || jm.getValue().isEmpty()
+                || js.getValue().isEmpty()) {
             JOptionPane.showMessageDialog(frame, "Data tidak boleh kosong!");
             return;
         }
 
-        if (jamMulaiValue.isEmpty() || jamSelesaiValue.isEmpty()) {
-            JOptionPane.showMessageDialog(frame, "Jam mulai dan selesai wajib dipilih!");
-            return;
-        }
-
-        if (!jamValid(jamMulaiValue, jamSelesaiValue)) {
+        if (!jamValid(jm.getValue(), js.getValue())) {
             JOptionPane.showMessageDialog(frame, "Jam selesai harus setelah jam mulai!");
             return;
         }
 
-        try (FileWriter fw = new FileWriter("src/gui/data/data.txt", true)) {
-            fw.write(data1 + "|" + data2 + "|" + checkBoxHari + "|" + jamMulaiValue + "|" + jamSelesaiValue + "|" + data3 +"|" + System.lineSeparator());
-            JOptionPane.showMessageDialog(frame, "Data berhasil disimpan!");
+        File file = new File("src/gui/data/data.txt");
+
+        try {
+            java.util.List<String> semuaData = new java.util.ArrayList<>();
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                semuaData.add(line);
+            }
+            br.close();
+
+            String dataBaru = kode + "|" + nama + "|" + hari + "|"
+                    + jm.getValue() + "|" + js.getValue() + "|" + ruang;
+
+            semuaData.set(indexEdit, dataBaru);
+
+            FileWriter fw = new FileWriter(file);
+            for (String s : semuaData) {
+                fw.write(s + System.lineSeparator());
+            }
+            fw.close();
+
+            JOptionPane.showMessageDialog(frame, "Data berhasil diupdate");
             frame.dispose();
+
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(frame, "Gagal menyimpan data!");
+            JOptionPane.showMessageDialog(frame, "Gagal update data!");
+            e.printStackTrace();
         }
     }
+
+
+    private void setJam(JComboBox<JamSlot> combo, String value) {
+        for (int i = 0; i < combo.getItemCount(); i++) {
+            JamSlot slot = combo.getItemAt(i);
+            if (slot.getValue().equals(value)) {
+                combo.setSelectedIndex(i);
+                break;
+            }
+        }
+    }
+
 
     public class JamSlot {
         private String label;

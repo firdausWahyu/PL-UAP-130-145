@@ -1,14 +1,12 @@
 package gui.listdata;
 
-import gui.inputpage.CreateData;
+import gui.dashboard.*;
+import gui.inputpage.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 public class ListPage {
     JFrame frame;
@@ -37,12 +35,22 @@ public class ListPage {
         JButton btnRefresh = new JButton("Refresh");
         JButton btnEdit = new JButton("Edit");
         JButton btnHapus  = new JButton("Hapus");
+        JButton btnKembali  = new JButton("Kembali");
 
-        JPanel panelButton = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelButton.add(btnTambah);
-        panelButton.add(btnRefresh);
-        panelButton.add(btnEdit);
-        panelButton.add(btnHapus);
+        JPanel panelButton = new JPanel(new BorderLayout());
+
+        JPanel panelLeft = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panelLeft.add(btnTambah);
+        panelLeft.add(btnRefresh);
+        panelLeft.add(btnEdit);
+        panelLeft.add(btnHapus);
+
+        JPanel panelRight = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelRight.add(btnKembali);
+
+        panelButton.add(panelLeft, BorderLayout.WEST);
+        panelButton.add(panelRight, BorderLayout.EAST);
+
         panelButton.setMaximumSize(
                 new Dimension(Integer.MAX_VALUE, panelButton.getPreferredSize().height)
         );
@@ -52,6 +60,32 @@ public class ListPage {
 
         btnTambah.addActionListener(e -> new CreateData());
         btnRefresh.addActionListener(e -> refreshTable());
+        btnKembali.addActionListener(e -> {
+            frame.dispose();
+            new Dashboard();
+        });
+        btnHapus.addActionListener(e -> hapusData());
+        btnEdit.addActionListener(e -> {
+            int row = table.getSelectedRow();
+            if (row == -1) {
+                JOptionPane.showMessageDialog(frame, "Pilih data terlebih dahulu!");
+                return;
+            }
+
+            String[] data = {
+                    model.getValueAt(row, 0).toString(),
+                    model.getValueAt(row, 1).toString(),
+                    model.getValueAt(row, 2).toString(),
+                    // jam dipecah lagi
+                    model.getValueAt(row, 3).toString().split(" - ")[0],
+                    model.getValueAt(row, 3).toString().split(" - ")[1],
+                    model.getValueAt(row, 4).toString()
+            };
+
+            new UpdateData(data, row);
+        });
+
+
 
         frame.setVisible(true);
     }
@@ -97,5 +131,55 @@ public class ListPage {
         loadData();
     }
 
+    private void hapusData() {
+        int selectedRow = table.getSelectedRow();
+
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(frame, "Pilih data yang ingin dihapus!");
+            return;
+        }
+
+        int konfirmasi = JOptionPane.showConfirmDialog(
+                frame,
+                "Yakin ingin menghapus data ini?",
+                "Konfirmasi Hapus",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (konfirmasi != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        File file = new File("src/gui/data/data.txt");
+        File tempFile = new File("src/gui/data/temp.txt");
+
+        try (
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                FileWriter fw = new FileWriter(tempFile)
+        ) {
+            String line;
+            int index = 0;
+
+            while ((line = br.readLine()) != null) {
+                if (index != selectedRow) {
+                    fw.write(line + System.lineSeparator());
+                }
+                index++;
+            }
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(frame, "Gagal menghapus data!");
+            e.printStackTrace();
+            return;
+        }
+
+        // Ganti file lama
+        if (file.delete()) {
+            tempFile.renameTo(file);
+        }
+
+        JOptionPane.showMessageDialog(frame, "Data berhasil dihapus!");
+        refreshTable();
+    }
 
 }

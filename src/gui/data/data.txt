@@ -1,1 +1,2 @@
 id1|Pemograman Lanjut D|Kamis|07:00|08:40|2.15 GKB I|
+aaa|aaa|Senin|07:00|20:45|bbbbbbbb
