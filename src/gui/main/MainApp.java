@@ -1,6 +1,9 @@
 package gui.main;
 
+import gui.inputpage.*;
 import gui.listdata.*;
+import gui.history.*;
+import gui.dashboard.*;
 
 //MainApp
 public class MainApp {

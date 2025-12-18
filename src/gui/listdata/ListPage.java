@@ -57,7 +57,7 @@ public class ListPage {
     }
 
     private void createTable(){
-        String[] kolom = {"Kode", "Nama Mata Kuliah", "Hari", "Jam"};
+        String[] kolom = {"Kode", "Nama Mata Kuliah", "Hari", "Jam", "Ruangan"};
         model = new DefaultTableModel(kolom, 0);
         table = new JTable(model);
     }
@@ -75,8 +75,17 @@ public class ListPage {
 
             while ((line = br.readLine()) != null) {
                 String[] data = line.split("\\|");
-                model.addRow(data);
+                String jamGabung = data[3] + " - " + data[4];
+
+                model.addRow(new Object[]{
+                        data[0],   // kode
+                        data[1],   // nama
+                        data[2],   // hari
+                        jamGabung, // jam mulai - jam selesai
+                        data[5]    // ruangan
+                });
             }
+
 
         } catch (IOException e) {
             JOptionPane.showMessageDialog(frame, "Gagal membaca data!");
