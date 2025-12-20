@@ -4,7 +4,10 @@ import gui.dashboard.*;
 import gui.inputpage.*;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.io.*;
 
@@ -14,7 +17,7 @@ public class ListPage {
     DefaultTableModel model;
 
     public ListPage() {
-        //Frame
+        // Main Frame
         frame = new JFrame("List Data");
         frame.setSize(600, 400);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -25,17 +28,74 @@ public class ListPage {
         createTable();
         loadData();
 
+        //Header
+        JPanel panelHeader = new JPanel();
+        panelHeader.setLayout(new BorderLayout());
+        panelHeader.setMaximumSize( new Dimension(Integer.MAX_VALUE, 60));
+        JLabel lblTitle = new JLabel("Tabel Jadwal Mata Kuliah");
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 18));
+        lblTitle.setBorder(BorderFactory.createEmptyBorder(15, 15, 5, 0));
+        panelHeader.add(lblTitle, BorderLayout.WEST);
+
+        //Layout panel Tabel
         JPanel panelTabel = new JPanel(new BorderLayout());
+        panelTabel.setBorder(BorderFactory.createEmptyBorder(0, 15,15,15));
         panelTabel.add(new JScrollPane(table), BorderLayout.CENTER);
         panelTabel.setPreferredSize(new Dimension(550, 250));
         panelTabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 250));
         panelTabel.setMinimumSize(new Dimension(550, 250));
 
+        //Button
         JButton btnTambah = new JButton("Tambah");
         JButton btnRefresh = new JButton("Refresh");
         JButton btnEdit = new JButton("Edit");
         JButton btnHapus  = new JButton("Hapus");
         JButton btnKembali  = new JButton("Kembali");
+
+        buttonColor(btnTambah, new Color(25, 135, 84)); // hijau
+        buttonColor(btnRefresh, new Color(13, 110, 253)); // biru
+        buttonColor(btnEdit, new Color(255, 193, 7)); // kuning
+        buttonColor(btnHapus, new Color(220, 53, 69)); // merah
+        buttonColor(btnKembali, new Color(108, 117, 125)); // abu
+
+        //Search
+        JTextField tfSearch = new JTextField(20);
+        JPanel panelSearch = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panelSearch.setBorder(BorderFactory.createEmptyBorder(0,15,0,15));
+        panelSearch.add(new JLabel("Cari:"));
+        panelSearch.add(tfSearch);
+
+        //Sort Table
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+        table.setRowSorter(sorter);
+
+        tfSearch.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                search();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                search();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                search();
+            }
+
+            private void search() {
+                String text = tfSearch.getText();
+
+                if (text.trim().length() == 0) {
+                    sorter.setRowFilter(null);
+                } else {
+                    sorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                }
+            }
+        });
+
 
         JPanel panelButton = new JPanel(new BorderLayout());
 
@@ -54,9 +114,15 @@ public class ListPage {
         panelButton.setMaximumSize(
                 new Dimension(Integer.MAX_VALUE, panelButton.getPreferredSize().height)
         );
+        panelButton.setBorder(BorderFactory.createEmptyBorder(0,15,0,15));
 
+        frame.add(panelHeader);
         frame.add(panelTabel);
         frame.add(panelButton);
+        frame.add(panelSearch);
+        frame.add(panelTabel);
+        frame.add(panelButton);
+
 
         btnTambah.addActionListener(e -> new CreateData());
         btnRefresh.addActionListener(e -> refreshTable());
@@ -85,8 +151,6 @@ public class ListPage {
             new UpdateData(data, row);
         });
 
-
-
         frame.setVisible(true);
     }
 
@@ -94,6 +158,12 @@ public class ListPage {
         String[] kolom = {"Kode", "Nama Mata Kuliah", "Hari", "Jam", "Ruangan"};
         model = new DefaultTableModel(kolom, 0);
         table = new JTable(model);
+
+        table.getTableHeader().setBackground(new Color(33, 37, 41)); // hitam keabu
+        table.getTableHeader().setForeground(Color.WHITE);
+        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        table.getTableHeader().setOpaque(false);
+
     }
 
     private void loadData() {
@@ -180,6 +250,13 @@ public class ListPage {
 
         JOptionPane.showMessageDialog(frame, "Data berhasil dihapus!");
         refreshTable();
+    }
+
+    private void buttonColor(JButton btn, Color bg) {
+        btn.setBackground(bg);
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        btn.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
     }
 
 }
