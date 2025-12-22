@@ -7,14 +7,15 @@ import java.io.IOException;
 
 public class CreateData {
     JFrame frame;
-    JTextField kodeMatkul, namaMatkul, ruangan;
+    JTextField kodeMatkul, namaMatkul, ruangan, dosen;
     JComboBox<String> cbHari;
     JComboBox<JamSlot> cbJamMulai;
     JComboBox<JamSlot> cbJamSelesai;
 
+    //Form
     public CreateData(){
         frame = new JFrame("Tambah Data");
-        frame.setSize(400, 300);
+        frame.setSize(400, 350);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLayout(new BorderLayout());
@@ -32,6 +33,7 @@ public class CreateData {
         kodeMatkul = new JTextField(20);
         namaMatkul = new JTextField(20);
         ruangan = new JTextField(20);
+        dosen = new JTextField(20);
 
         cbHari();
         cbJamMulai();
@@ -47,6 +49,7 @@ public class CreateData {
         panelForm.add(buatBaris("Jam Mulai", cbJamMulai));
         panelForm.add(buatBaris("Jam Selesai", cbJamSelesai));
         panelForm.add(buatBaris("Ruangan", ruangan));
+        panelForm.add(buatBaris("Dosen", dosen));
 
         JButton btnSave = new JButton("Simpan");
         JButton btnClear = new JButton("Clear");
@@ -66,6 +69,7 @@ public class CreateData {
         String data1 = kodeMatkul.getText();
         String data2 = namaMatkul.getText();
         String data3 = ruangan.getText();
+        String data4 = dosen.getText();
         String checkBoxHari = cbHari.getSelectedItem().toString();
         JamSlot jamMulai = (JamSlot) cbJamMulai.getSelectedItem();
         JamSlot jamSelesai = (JamSlot) cbJamSelesai.getSelectedItem();
@@ -91,13 +95,26 @@ public class CreateData {
             return;
         }
 
-        try (FileWriter fw = new FileWriter("src/gui/data/data.txt", true)) {
-            fw.write(data1 + "|" + data2 + "|" + checkBoxHari + "|" + jamMulaiValue + "|" + jamSelesaiValue + "|" + data3 + System.lineSeparator());
+        try (FileWriter fw = new FileWriter("src/gui/data/data.csv", true)) {
+
+            fw.write(String.join(";",
+                    data1,
+                    data2,
+                    checkBoxHari,
+                    jamMulaiValue,
+                    jamSelesaiValue,
+                    data3,
+                    data4
+            ));
+            fw.write(System.lineSeparator());
+
             JOptionPane.showMessageDialog(frame, "Data berhasil disimpan!");
             frame.dispose();
+
         } catch (IOException e) {
             JOptionPane.showMessageDialog(frame, "Gagal menyimpan data!");
         }
+
     }
 
     private void cbHari(){
@@ -178,6 +195,7 @@ public class CreateData {
         cbHari.setSelectedIndex(0);
         cbJamMulai.setSelectedIndex(0);
         cbJamSelesai.setSelectedIndex(0);
+        ruangan.setText("");
     }
 
     private boolean jamValid(String mulai, String selesai) {

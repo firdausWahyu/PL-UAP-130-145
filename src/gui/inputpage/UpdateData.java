@@ -6,7 +6,7 @@ import java.io.*;
 
 public class UpdateData {
     JFrame frame;
-    JTextField kodeMatkul, namaMatkul, ruangan;
+    JTextField kodeMatkul, namaMatkul, ruangan, dosen;
     JComboBox<String> cbHari;
     JComboBox<JamSlot> cbJamMulai;
     JComboBox<JamSlot> cbJamSelesai;
@@ -33,6 +33,7 @@ public class UpdateData {
         kodeMatkul = new JTextField(20);
         namaMatkul = new JTextField(20);
         ruangan = new JTextField(20);
+        dosen = new JTextField(20);
 
         cbHari();
         cbJamMulai();
@@ -43,12 +44,13 @@ public class UpdateData {
         panelForm.setLayout(new BoxLayout(panelForm, BoxLayout.Y_AXIS));
         panelForm.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 15));
 
-        panelForm.add(buatBaris("Kode Mata Kuliah", kodeMatkul));
+        //panelForm.add(buatBaris("Kode Mata Kuliah", kodeMatkul));
         panelForm.add(buatBaris("Nama Mata Kuliah", namaMatkul));
         panelForm.add(buatBaris("Jadwal Hari", cbHari));
         panelForm.add(buatBaris("Jam Mulai", cbJamMulai));
         panelForm.add(buatBaris("Jam Selesai", cbJamSelesai));
         panelForm.add(buatBaris("Ruangan", ruangan));
+        panelForm.add(buatBaris("Dosen", dosen));
 
         kodeMatkul.setText(data[0]);
         namaMatkul.setText(data[1]);
@@ -56,6 +58,7 @@ public class UpdateData {
         setJam(cbJamMulai, data[3]);
         setJam(cbJamSelesai, data[4]);
         ruangan.setText(data[5]);
+        dosen.setText(data[6]);
 
         JButton btnSave = new JButton("Simpan");
         JButton btnClear = new JButton("Clear");
@@ -75,10 +78,12 @@ public class UpdateData {
         String kode = kodeMatkul.getText();
         String nama = namaMatkul.getText();
         String ruang = ruangan.getText();
+        String dsn = dosen.getText();
         String hari = cbHari.getSelectedItem().toString();
         JamSlot jm = (JamSlot) cbJamMulai.getSelectedItem();
         JamSlot js = (JamSlot) cbJamSelesai.getSelectedItem();
 
+        // validasi
         if (kode.isEmpty() || nama.isEmpty() || ruang.isEmpty()
                 || hari.equals("Pilih Hari")
                 || jm.getValue().isEmpty()
@@ -92,30 +97,38 @@ public class UpdateData {
             return;
         }
 
-        File file = new File("src/gui/data/data.txt");
+        File file = new File("src/gui/data/data.csv");
 
         try {
-            java.util.List<String> semuaData = new java.util.ArrayList<>();
             BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
+            java.util.List<String> semuaBaris = new java.util.ArrayList<>();
 
+            String line;
             while ((line = br.readLine()) != null) {
-                semuaData.add(line);
+                semuaBaris.add(line);
             }
             br.close();
 
-            String dataBaru = kode + "|" + nama + "|" + hari + "|"
-                    + jm.getValue() + "|" + js.getValue() + "|" + ruang;
+            // indexEdit + 1 karena baris 0 adalah header CSV
+            int barisData = indexEdit + 1;
 
-            semuaData.set(indexEdit, dataBaru);
+            String dataBaru = kode + ";" +
+                    nama + ";" +
+                    hari + ";" +
+                    jm.getValue() + ";" +
+                    js.getValue() + ";" +
+                    ruang + ";" +
+                    dosen;
+
+            semuaBaris.set(barisData, dataBaru);
 
             FileWriter fw = new FileWriter(file);
-            for (String s : semuaData) {
+            for (String s : semuaBaris) {
                 fw.write(s + System.lineSeparator());
             }
             fw.close();
 
-            JOptionPane.showMessageDialog(frame, "Data berhasil diupdate");
+            JOptionPane.showMessageDialog(frame, "Data berhasil diupdate!");
             frame.dispose();
 
         } catch (IOException e) {
@@ -123,6 +136,7 @@ public class UpdateData {
             e.printStackTrace();
         }
     }
+
 
     private void cbHari(){
         cbHari = new JComboBox<>(new String[]{
@@ -210,6 +224,7 @@ public class UpdateData {
     private void clearForm() {
         kodeMatkul.setText("");
         namaMatkul.setText("");
+        ruangan.setText("");
         cbHari.setSelectedIndex(0);
         cbJamMulai.setSelectedIndex(0);
         cbJamSelesai.setSelectedIndex(0);

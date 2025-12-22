@@ -117,8 +117,6 @@ public class ListPage {
         panelButton.setBorder(BorderFactory.createEmptyBorder(0,15,0,15));
 
         frame.add(panelHeader);
-        frame.add(panelTabel);
-        frame.add(panelButton);
         frame.add(panelSearch);
         frame.add(panelTabel);
         frame.add(panelButton);
@@ -131,12 +129,16 @@ public class ListPage {
             new Dashboard();
         });
         btnHapus.addActionListener(e -> hapusData());
+
         btnEdit.addActionListener(e -> {
-            int row = table.getSelectedRow();
-            if (row == -1) {
+            int viewRow = table.getSelectedRow();
+
+            if (viewRow == -1) {
                 JOptionPane.showMessageDialog(frame, "Pilih data terlebih dahulu!");
                 return;
             }
+
+            int row = table.convertRowIndexToModel(viewRow);
 
             String[] data = {
                     model.getValueAt(row, 0).toString(),
@@ -145,17 +147,19 @@ public class ListPage {
                     // jam dipecah lagi
                     model.getValueAt(row, 3).toString().split(" - ")[0],
                     model.getValueAt(row, 3).toString().split(" - ")[1],
-                    model.getValueAt(row, 4).toString()
+                    model.getValueAt(row, 4).toString(),
+                    model.getValueAt(row, 5).toString()
             };
 
             new UpdateData(data, row);
         });
 
+
         frame.setVisible(true);
     }
 
     private void createTable(){
-        String[] kolom = {"Kode", "Nama Mata Kuliah", "Hari", "Jam", "Ruangan"};
+        String[] kolom = {"Kode", "Nama Mata Kuliah", "Hari", "Jam", "Ruangan", "Dosen"};
         model = new DefaultTableModel(kolom, 0);
         table = new JTable(model);
 
@@ -167,7 +171,7 @@ public class ListPage {
     }
 
     private void loadData() {
-        File file = new File("src/gui/data/data.txt");
+        File file = new File("src/gui/data/data.csv");
         model.setRowCount(0);
 
         if (!file.exists()) {
@@ -176,9 +180,20 @@ public class ListPage {
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
+            boolean isHeader = true;
 
             while ((line = br.readLine()) != null) {
-                String[] data = line.split("\\|");
+
+                // lewati header CSV
+                if (isHeader) {
+                    isHeader = false;
+                    continue;
+                }
+
+                if (line.trim().isEmpty()) continue;
+
+                String[] data = line.split(";");
+
                 String jamGabung = data[3] + " - " + data[4];
 
                 model.addRow(new Object[]{
@@ -186,51 +201,56 @@ public class ListPage {
                         data[1],   // nama
                         data[2],   // hari
                         jamGabung, // jam mulai - jam selesai
-                        data[5]    // ruangan
+                        data[5],    // ruangan
+                        data[6]    // Dosen
                 });
             }
 
-
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(frame, "Gagal membaca data!");
+            JOptionPane.showMessageDialog(frame, "Gagal membaca data CSV!");
             e.printStackTrace();
         }
     }
+
 
     private void refreshTable() {
         loadData();
     }
 
     private void hapusData() {
-        int selectedRow = table.getSelectedRow();
-
-        if (selectedRow == -1) {
+        int viewRow = table.getSelectedRow();
+        if (viewRow == -1) {
             JOptionPane.showMessageDialog(frame, "Pilih data yang ingin dihapus!");
             return;
         }
 
-        int konfirmasi = JOptionPane.showConfirmDialog(
-                frame,
+        int selectedRow = table.convertRowIndexToModel(viewRow);
+
+        int konfirmasi = JOptionPane.showConfirmDialog(frame,
                 "Yakin ingin menghapus data ini?",
                 "Konfirmasi Hapus",
                 JOptionPane.YES_NO_OPTION
         );
 
-        if (konfirmasi != JOptionPane.YES_OPTION) {
-            return;
-        }
+        if (konfirmasi != JOptionPane.YES_OPTION) return;
 
-        File file = new File("src/gui/data/data.txt");
-        File tempFile = new File("src/gui/data/temp.txt");
+        File file = new File("src/gui/data/data.csv");
+        File tempFile = new File("src/gui/data/temp.csv");
 
         try (
                 BufferedReader br = new BufferedReader(new FileReader(file));
                 FileWriter fw = new FileWriter(tempFile)
         ) {
             String line;
-            int index = 0;
+            int index = -1; // karena header
 
             while ((line = br.readLine()) != null) {
+                if (index == -1) {
+                    fw.write(line + System.lineSeparator()); // header
+                    index++;
+                    continue;
+                }
+
                 if (index != selectedRow) {
                     fw.write(line + System.lineSeparator());
                 }
@@ -243,14 +263,13 @@ public class ListPage {
             return;
         }
 
-        // Ganti file lama
-        if (file.delete()) {
-            tempFile.renameTo(file);
-        }
+        file.delete();
+        tempFile.renameTo(file);
 
         JOptionPane.showMessageDialog(frame, "Data berhasil dihapus!");
         refreshTable();
     }
+
 
     private void buttonColor(JButton btn, Color bg) {
         btn.setBackground(bg);
