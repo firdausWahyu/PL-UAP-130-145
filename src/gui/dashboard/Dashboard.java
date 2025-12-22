@@ -1,5 +1,6 @@
 package gui.dashboard;
 
+import gui.history.History;
 import gui.listdata.ListPage;
 
 import javax.swing.*;
@@ -24,13 +25,13 @@ public class Dashboard {
         JPanel panelHeader = new JPanel(new BorderLayout());
         panelHeader.add(lblTitle, BorderLayout.CENTER);
 
-        // ===== BUTTON (ATAS BAWAH) =====
+        // button
         JButton btnData = new JButton("Lihat Data");
         JButton btnJadwal  = new JButton("Lihat Jadwal");
-
         styleButton(btnData, new Color(13, 110, 253));
         styleButton(btnJadwal, new Color(25, 135, 84));
 
+        //Layout
         btnData.setPreferredSize(new Dimension(150, 40));
         btnJadwal.setPreferredSize(new Dimension(150, 40));
 
@@ -41,13 +42,8 @@ public class Dashboard {
         panelButton.add(btnJadwal);
 
         // action
-        btnData.addActionListener(e -> {
-            new ListPage();
-        });
-
-        btnJadwal.addActionListener(e -> {
-            JOptionPane.showMessageDialog(frame, "Menu List");
-        });
+        btnData.addActionListener(e -> {new ListPage(); });
+        btnJadwal.addActionListener(e -> {new History();});
         frame.add(panelHeader, BorderLayout.NORTH);
         frame.add(panelButton, BorderLayout.CENTER);
 

@@ -97,7 +97,7 @@ public class UpdateData {
             return;
         }
 
-        File file = new File("src/gui/data/data.csv");
+        File file = new File("src/data/data.csv");
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -118,7 +118,7 @@ public class UpdateData {
                     jm.getValue() + ";" +
                     js.getValue() + ";" +
                     ruang + ";" +
-                    dosen;
+                    dsn;
 
             semuaBaris.set(barisData, dataBaru);
 

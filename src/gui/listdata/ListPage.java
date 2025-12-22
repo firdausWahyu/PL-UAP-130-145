@@ -171,7 +171,7 @@ public class ListPage {
     }
 
     private void loadData() {
-        File file = new File("src/gui/data/data.csv");
+        File file = new File("src/data/data.csv");
         model.setRowCount(0);
 
         if (!file.exists()) {
@@ -234,8 +234,8 @@ public class ListPage {
 
         if (konfirmasi != JOptionPane.YES_OPTION) return;
 
-        File file = new File("src/gui/data/data.csv");
-        File tempFile = new File("src/gui/data/temp.csv");
+        File file = new File("src/data/data.csv");
+        File tempFile = new File("src/data/temp.csv");
 
         try (
                 BufferedReader br = new BufferedReader(new FileReader(file));

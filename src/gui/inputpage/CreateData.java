@@ -95,7 +95,7 @@ public class CreateData {
             return;
         }
 
-        try (FileWriter fw = new FileWriter("src/gui/data/data.csv", true)) {
+        try (FileWriter fw = new FileWriter("src/data/data.csv", true)) {
 
             fw.write(String.join(";",
                     data1,
