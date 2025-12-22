@@ -31,7 +31,7 @@ public class History {
         frame.add(title, BorderLayout.NORTH);
 
         // btn
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         bottomPanel.setBorder(new EmptyBorder(5, 10, 10, 10));
 
         JButton btnBack = new JButton("Kembali");
