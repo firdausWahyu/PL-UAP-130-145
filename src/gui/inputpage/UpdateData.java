@@ -20,25 +20,33 @@ public class UpdateData {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
-        // ===== HEADER =====
+        // title
         JLabel lblTitle = new JLabel("Update Jadwal Mata Kuliah");
         lblTitle.setFont(new Font("Arial", Font.BOLD, 18));
         lblTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
         lblTitle.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 15));
 
-        JPanel panelHeader = new JPanel(new BorderLayout());
-        panelHeader.setAlignmentX(Component.LEFT_ALIGNMENT);
-        panelHeader.add(lblTitle, BorderLayout.WEST);
+        cbHari();
+        cbJamMulai();
+        cbJamSelesai();
 
         kodeMatkul = new JTextField(20);
         namaMatkul = new JTextField(20);
         ruangan = new JTextField(20);
         dosen = new JTextField(20);
 
-        cbHari();
-        cbJamMulai();
-        cbJamSelesai();
+        //Isi Form
+        kodeMatkul.setText(data[0]);
+        namaMatkul.setText(data[1]);
+        cbHari.setSelectedItem(data[2]);
+        setJam(cbJamMulai, data[3]);
+        setJam(cbJamSelesai, data[4]);
+        ruangan.setText(data[5]);
+        dosen.setText(data[6]);
 
+        JPanel panelHeader = new JPanel(new BorderLayout());
+        panelHeader.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panelHeader.add(lblTitle, BorderLayout.WEST);
 
         JPanel panelForm = new JPanel();
         panelForm.setLayout(new BoxLayout(panelForm, BoxLayout.Y_AXIS));
@@ -52,13 +60,6 @@ public class UpdateData {
         panelForm.add(buatBaris("Ruangan", ruangan));
         panelForm.add(buatBaris("Dosen", dosen));
 
-        kodeMatkul.setText(data[0]);
-        namaMatkul.setText(data[1]);
-        cbHari.setSelectedItem(data[2]);
-        setJam(cbJamMulai, data[3]);
-        setJam(cbJamSelesai, data[4]);
-        ruangan.setText(data[5]);
-        dosen.setText(data[6]);
 
         JButton btnSave = new JButton("Simpan");
         JButton btnClear = new JButton("Clear");
@@ -99,6 +100,7 @@ public class UpdateData {
 
         File file = new File("src/data/data.csv");
 
+        //Update
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             java.util.List<String> semuaBaris = new java.util.ArrayList<>();

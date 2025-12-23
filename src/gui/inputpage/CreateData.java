@@ -26,19 +26,20 @@ public class CreateData {
         lblTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
         lblTitle.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 15));
 
-        JPanel panelHeader = new JPanel(new BorderLayout());
-        panelHeader.setAlignmentX(Component.LEFT_ALIGNMENT);
-        panelHeader.add(lblTitle, BorderLayout.WEST);
+        cbHari();
+        cbJamMulai();
+        cbJamSelesai();
 
         kodeMatkul = new JTextField(20);
         namaMatkul = new JTextField(20);
         ruangan = new JTextField(20);
         dosen = new JTextField(20);
 
-        cbHari();
-        cbJamMulai();
-        cbJamSelesai();
+        JPanel panelHeader = new JPanel(new BorderLayout());
+        panelHeader.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panelHeader.add(lblTitle, BorderLayout.WEST);
 
+        //Panel
         JPanel panelForm = new JPanel();
         panelForm.setLayout(new BoxLayout(panelForm, BoxLayout.Y_AXIS));
         panelForm.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 15));

@@ -10,7 +10,6 @@ import java.util.*;
 import java.util.List;
 
 public class History {
-
     JFrame frame;
     List<Jadwal> listJadwal = new ArrayList<>();
 
@@ -31,14 +30,10 @@ public class History {
         frame.add(title, BorderLayout.NORTH);
 
         // btn
+        JButton btnBack = new JButton("Kembali");
+        styleButton(btnBack, Color.GRAY);
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         bottomPanel.setBorder(new EmptyBorder(5, 10, 10, 10));
-
-        JButton btnBack = new JButton("Kembali");
-
-// (opsional) gaya sederhana
-        btnBack.setFocusPainted(false);
-
         bottomPanel.add(btnBack);
         frame.add(bottomPanel, BorderLayout.SOUTH);
 
@@ -48,11 +43,12 @@ public class History {
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
         listPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
+        // perulangan
         for (Jadwal j : listJadwal) {
             listPanel.revalidate();
             listPanel.repaint();
             listPanel.add(createCard(j));
-            listPanel.add(Box.createVerticalStrut(10)); // jarak antar card
+            listPanel.add(Box.createVerticalStrut(10));
         }
 
         JScrollPane scrollPane = new JScrollPane(listPanel);
@@ -60,15 +56,14 @@ public class History {
         frame.add(scrollPane, BorderLayout.CENTER);
 
         btnBack.addActionListener(e -> {
-            frame.dispose();      // tutup halaman history
-            new Dashboard();     // buka dashboard
+            frame.dispose();
+            new Dashboard();
         });
 
 
         frame.setVisible(true);
     }
 
-    // perulangan
     private JPanel createCard(Jadwal j) {
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
@@ -124,19 +119,6 @@ public class History {
         }
     }
 
-    // sorting
-    private void sortJadwal() {
-        Collections.sort(listJadwal, (a, b) -> {
-            int hariA = urutanHari(a.hari);
-            int hariB = urutanHari(b.hari);
-
-            if (hariA != hariB) {
-                return hariA - hariB;
-            }
-            return a.jamMulai.compareTo(b.jamMulai);
-        });
-    }
-
     private int urutanHari(String hari) {
         switch (hari.toLowerCase()) {
             case "senin": return 1;
@@ -148,6 +130,18 @@ public class History {
             case "minggu": return 7;
             default: return 99;
         }
+    }
+    // sorting
+    private void sortJadwal() {
+        Collections.sort(listJadwal, (a, b) -> {
+            int hariA = urutanHari(a.hari);
+            int hariB = urutanHari(b.hari);
+
+            if (hariA != hariB) {
+                return hariA - hariB;
+            }
+            return a.jamMulai.compareTo(b.jamMulai);
+        });
     }
 
     // data
@@ -165,5 +159,13 @@ public class History {
             this.ruangan = ruangan;
             this.dosen = dosen;
         }
+    }
+
+    private void styleButton(JButton btn, Color bg) {
+        btn.setBackground(bg);
+        btn.setForeground(Color.WHITE);
+        btn.setFont(new Font("Arial", Font.BOLD, 15));
+        btn.setFocusPainted(false);
+        btn.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 30));
     }
 }
