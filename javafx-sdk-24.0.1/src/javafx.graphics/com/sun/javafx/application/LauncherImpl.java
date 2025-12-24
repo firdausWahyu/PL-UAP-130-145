@@ -456,7 +456,7 @@ public class LauncherImpl {
 
         Exception theEx = null;
         try {
-            Method mainMethod = tempAppClass.getMethod("main",
+            Method mainMethod = tempAppClass.getMethod("app",
                     new Class[] { (new String[0]).getClass() });
             if (verbose) {
                 System.err.println("Calling main(String[]) method");
